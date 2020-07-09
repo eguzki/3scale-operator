@@ -105,6 +105,8 @@ func (b *BaseReconciler) ReconcileResource(obj, desired common.KubernetesObject,
 		return err
 	}
 
+	log.Info("obj: ", " what", obj)
+
 	if err = b.Client().Get(b.ctx, key, obj); err != nil {
 		if !errors.IsNotFound(err) {
 			return err

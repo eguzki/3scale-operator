@@ -6,6 +6,6 @@ metadata:
 spec:
   type: appregistry
   endpoint: https://quay.io/cnr
-  registryNamespace: 3scaleoperatormaster
+  registryNamespace: myeung
   displayName: "3scale Operators master"
   publisher: "Red Hat"
