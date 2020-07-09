@@ -74,6 +74,7 @@ func (t *ThreescaleReconciler) reconcile3scaleProduct() (*helper.ProductEntity, 
 		return -1, false
 	}(productList.Products)
 
+	log.Info("3scale-reconciler produce spec+++++: ","", t.resource.Spec)
 	var productObj *threescaleapi.Product
 	if exists {
 		productObj = &productList.Products[idx]

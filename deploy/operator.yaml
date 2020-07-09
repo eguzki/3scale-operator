@@ -21,7 +21,7 @@ spec:
       containers:
         - name: 3scale-operator
           # Replace this with the built image name
-          image: REPLACE_IMAGE
+          image: quay.io/myeung/3scale-operator:v0.0.0
           command:
             - 3scale-operator
           env:

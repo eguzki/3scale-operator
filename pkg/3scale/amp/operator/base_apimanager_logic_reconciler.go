@@ -212,6 +212,9 @@ func (r *BaseAPIManagerLogicReconciler) ReconcileResource(obj, desired common.Ku
 		return err
 	}
 
+	r.Logger().Info("apimanager_logic", "k --- ", obj.GetName()+"-"+obj.GetNamespace()+"-"+obj.GetObjectKind().GroupVersionKind().String())
+	r.Logger().Info("apimanager_logic", "k &&& ", common.ObjectInfo(desired))
+
 	return r.BaseReconciler.ReconcileResource(obj, desired, r.APIManagerMutator(mutatefn))
 }
 

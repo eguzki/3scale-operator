@@ -12,6 +12,8 @@ import (
 	"github.com/3scale/3scale-operator/pkg/common"
 	"github.com/3scale/3scale-operator/pkg/reconcilers"
 	"github.com/3scale/3scale-operator/version"
+	"github.com/RHsyseng/operator-utils/pkg/resource/read"
+	routev1 "github.com/openshift/api/route/v1"
 
 	"github.com/RHsyseng/operator-utils/pkg/olm"
 	appsv1 "github.com/openshift/api/apps/v1"
@@ -96,6 +98,11 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 		return err
 	}
 
+	err = c.Watch(&source.Kind{Type: &routev1.Route{}}, ownerHandler)
+	if err != nil {
+		return err
+	}
+
 	err = c.Watch(&source.Kind{Type: &v1beta1.PodDisruptionBudget{}}, ownerHandler)
 	if err != nil {
 		return err
@@ -159,6 +166,16 @@ func (r *ReconcileAPIManager) Reconcile(request reconcile.Request) (reconcile.Re
 		logger.Info("Defaults set for APIManager resource")
 		return res, nil
 	}
+
+	reader := read.New(r.Client()).WithNamespace(instance.Namespace).WithOwnerObject(instance)
+	deployedRoutes, err := reader.List(&routev1.RouteList{})
+	if err != nil {
+		return reconcile.Result{}, err
+	}
+	for _, r := range deployedRoutes {
+		logger.Info("route>>> ", "", r)
+	}
+	logger.Info("len>>: ", "", len(deployedRoutes), "content:" , deployedRoutes)
 
 	if instance.Annotations[appsv1alpha1.OperatorVersionAnnotation] != version.Version {
 		logger.Info(fmt.Sprintf("Upgrade %s -> %s", instance.Annotations[appsv1alpha1.OperatorVersionAnnotation], version.Version))
@@ -257,6 +274,15 @@ func (r *ReconcileAPIManager) reconcileAPIManagerLogic(cr *appsv1alpha1.APIManag
 			return reconcile.Result{}, err
 		}
 	}
+
+	reader := read.New(r.Client()).WithNamespace(cr.Namespace).WithOwnerObject(cr)
+	resourceMap, err := reader.ListAll(
+		&routev1.RouteList{},
+	)
+	if err != nil {
+		log.Error(err, "Failed to list deployed objects. ", err)
+	}
+	log.Info("all routes>>>: ", "", resourceMap)
 
 	backendReconciler := operator.NewBackendReconciler(operator.NewBaseAPIManagerLogicReconciler(r.BaseReconciler, cr))
 	result, err = backendReconciler.Reconcile()

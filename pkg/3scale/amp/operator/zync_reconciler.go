@@ -25,6 +25,7 @@ func (r *ZyncReconciler) Reconcile() (reconcile.Result, error) {
 		return reconcile.Result{}, err
 	}
 
+	r.logger.Info("+++++inside Zync reconciler ", "","")
 	// Zync Que Role
 	err = r.ReconcileRole(zync.QueRole(), reconcilers.CreateOnlyMutator)
 	if err != nil {
@@ -50,23 +51,27 @@ func (r *ZyncReconciler) Reconcile() (reconcile.Result, error) {
 	}
 
 	// Zync Que DC
+	r.logger.Info("+++++inside Zync reconciler ", "zync Que","DC")
 	err = r.ReconcileDeploymentConfig(zync.QueDeploymentConfig(), reconcilers.GenericDeploymentConfigMutator)
 	if err != nil {
 		return reconcile.Result{}, err
 	}
 
+	r.logger.Info("+++++inside Zync reconciler ", "zync Que","DB DC")
 	// Zync DB DC
 	err = r.ReconcileDeploymentConfig(zync.DatabaseDeploymentConfig(), reconcilers.DeploymentConfigResourcesAndAffinityAndTolerationsMutator)
 	if err != nil {
 		return reconcile.Result{}, err
 	}
 
+	r.logger.Info("+++++inside Zync reconciler ", "zync Que","Service")
 	// Zync Service
 	err = r.ReconcileService(zync.Service(), reconcilers.CreateOnlyMutator)
 	if err != nil {
 		return reconcile.Result{}, err
 	}
 
+	r.logger.Info("+++++inside Zync reconciler ", "zync Que","DB Service")
 	// Zync Service
 	err = r.ReconcileService(zync.DatabaseService(), reconcilers.CreateOnlyMutator)
 	if err != nil {

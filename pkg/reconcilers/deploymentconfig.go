@@ -118,6 +118,7 @@ func DeploymentConfigContainerResourcesReconciler(desired, existing *appsv1.Depl
 	desiredName := common.ObjectInfo(desired)
 	update := false
 
+	log.Info(fmt.Sprintf("%s spec.DeploymentConfigContainerResourcesReconciler+++++:","", common.ObjectInfo(desired)))
 	//
 	// Check container resource requirements
 	//

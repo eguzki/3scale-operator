@@ -25,13 +25,13 @@ help: Makefile
 vendor:
 	$(GO) mod vendor
 
-IMAGE ?= quay.io/3scale/3scale-operator
+IMAGE ?= quay.io/myeung/3scale-operator
 SOURCE_VERSION ?= master
-VERSION ?= v0.0.1
+VERSION ?= v0.0.0
 NAMESPACE ?= $(shell $(OC) project -q 2>/dev/null || echo operator-test)
 OPERATOR_NAME ?= threescale-operator
 MANIFEST_RELEASE ?= 1.0.$(shell git rev-list --count master)
-APPLICATION_REPOSITORY_NAMESPACE ?= 3scaleoperatormaster
+APPLICATION_REPOSITORY_NAMESPACE ?= myeung
 TEMPLATES_MAKEFILE_PATH = $(PROJECT_PATH)/pkg/3scale/amp
 
 ## download: Download go.mod dependencies
@@ -140,7 +140,7 @@ push-manifest:
 ifndef OPERATORCOURIER
 	$(error "operator-courier is not available please install pip3 install operator-courier")
 endif
-	cd $(PROJECT_PATH)/deploy/olm-catalog && operator-courier push 3scale-operator-master/ $(APPLICATION_REPOSITORY_NAMESPACE) 3scale-operator-master $(MANIFEST_RELEASE) "$(TOKEN)"
+	cd $(PROJECT_PATH)/deploy/olm-catalog && operator-courier --verbose push 3scale-operator-master/ $(APPLICATION_REPOSITORY_NAMESPACE) 3scale-operator-master $(MANIFEST_RELEASE) "basic bXlldW5nOlNhbmc2N3Npbg=="
 
 ## templates: generate templates
 templates:
