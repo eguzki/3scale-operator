@@ -4,9 +4,11 @@ import (
 	"github.com/3scale/3scale-operator/pkg/3scale/amp/component"
 	appsv1alpha1 "github.com/3scale/3scale-operator/pkg/apis/apps/v1alpha1"
 	"github.com/3scale/3scale-operator/pkg/reconcilers"
-	routev1 "github.com/openshift/api/route/v1"
+	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
+	routev1 "github.com/openshift/api/route/v1"
+
 )
 
 type BackendReconciler struct {
@@ -51,6 +53,10 @@ func (r *BackendReconciler) Reconcile() (reconcile.Result, error) {
 	if err != nil {
 		return reconcile.Result{}, err
 	}
+
+	err = r.Client().Get(r.Context(), types.NamespacedName{Name: r.apiManager.Namespace}, route)
+	r.logger.Info("++++++++++ype of message, " , "key", route, "err", err.Error())
+
 	// Worker DC
 	err = r.ReconcileDeploymentConfig(backend.WorkerDeploymentConfig(), reconcilers.GenericDeploymentConfigMutator)
 	if err != nil {

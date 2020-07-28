@@ -10,6 +10,7 @@ import (
 	"github.com/3scale/3scale-operator/pkg/helper"
 	"github.com/3scale/3scale-operator/pkg/reconcilers"
 	"github.com/3scale/3scale-operator/version"
+	routev1 "github.com/openshift/api/route/v1"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -81,7 +82,10 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 	if err != nil {
 		return err
 	}
-
+	err = c.Watch(&source.Kind{Type: &routev1.Route{}}, &handler.EnqueueRequestForObject{})
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -127,6 +131,7 @@ func (r *ReconcileBackend) Reconcile(request reconcile.Request) (reconcile.Resul
 	if backend.DeletionTimestamp != nil {
 		return reconcile.Result{}, nil
 	}
+	reqLogger.Info("Back-endd changeds.>>>>>")
 
 	result, err := r.reconcile(backend)
 	if err != nil {
