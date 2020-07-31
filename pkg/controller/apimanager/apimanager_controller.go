@@ -97,8 +97,8 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 	if err != nil {
 		return err
 	}
-
-	err = c.Watch(&source.Kind{Type: &routev1.RouteList{}}, &handler.EnqueueRequestForObject{})
+	log.Info("register the watcher ......")
+	err = c.Watch(&source.Kind{Type: &routev1.Route{}}, &handler.EnqueueRequestForObject{})
 	if err != nil {
 		return err
 	}
@@ -219,19 +219,19 @@ func (r *ReconcileAPIManager) apiManagerInstance(namespacedName types.Namespaced
 			// Owned objects are automatically garbage collected. For additional cleanup logic use finalizers.
 			// Return and don't requeue
 
-			logger := r.Logger().WithValues("Request.Namespace", namespacedName, "Request.Name", "--")
-			reader := read.New(r.Client()).WithNamespace(instance.Namespace) //.WithOwnerObject(instance)
-			deployedRoutes, err := reader.List(&routev1.RouteList{})
-			if err != nil {
-				return nil, nil
-			}
-			for _, r := range deployedRoutes {
-				//realr := r.(*routev1.Route)
-				//realr.Specc
-				logger.Info("route>>> ", ",name:", r.GetName(), "objKind:", r.GetAnnotations())
-				logger.Info("route>>> ", ",name:", r.GetName(), "ownRef:", r.GetOwnerReferences())
-			}
-			logger.Info("len>>: ", "", len(deployedRoutes))
+			//logger := r.Logger().WithValues("Request.Namespace", namespacedName, "Request.Name", "--")
+			//reader := read.New(r.Client()).WithNamespace(instance.Namespace) //.WithOwnerObject(instance)
+			//deployedRoutes, err := reader.List(&routev1.RouteList{})
+			//if err != nil {
+			//	return nil, nil
+			//}
+			//for _, r := range deployedRoutes {
+			//	//realr := r.(*routev1.Route)
+			//	//realr.Specc
+			//	logger.Info("route>>> ", ",name:", r.GetName(), "objKind:", r.GetAnnotations())
+			//	logger.Info("route>>> ", ",name:", r.GetName(), "ownRef:", r.GetOwnerReferences())
+			//}
+			//logger.Info("len>>: ", "", len(deployedRoutes))
 
 
 			return nil, nil
@@ -281,6 +281,7 @@ func (r *ReconcileAPIManager) reconcileAPIManagerLogic(cr *appsv1alpha1.APIManag
 		}
 	}
 
+	log.Info("get all routes: ", "", "")
 	reader := read.New(r.Client()).WithNamespace(cr.Namespace).WithOwnerObject(cr)
 	resourceMap, err := reader.ListAll(
 		&routev1.RouteList{},
